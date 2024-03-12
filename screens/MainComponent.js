@@ -1,4 +1,3 @@
-import { View } from 'react-native';
 import CampsiteInfoScreen from './CampsiteInfoScreen';
 import DirectoryScreen from './DirectoryScreen';
 import { Platform, View } from 'react-native';
@@ -6,6 +5,37 @@ import Constants from 'expo-constants';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './HomeScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import AboutScreen from './AboutScreen';
+import ContactScreen from './ContactScreen';
+
+
+const AboutStack = createStackNavigator();
+const ContactStack = createStackNavigator();
+
+function AboutNavigator() {
+    return (
+        <AboutStack.Navigator>
+            <AboutStack.Screen
+                name="About"
+                component={AboutScreen}
+            />
+        </AboutStack.Navigator>
+    );
+}
+
+function ContactNavigator() {
+    return (
+        <ContactStack.Navigator>
+            <ContactStack.Screen
+                name="Contact"
+                component={ContactScreen}
+                options={{ title: 'Contact Us' }}
+            />
+        </ContactStack.Navigator>
+    );
+}
+
+
 
 const Drawer = createDrawerNavigator();
 
@@ -17,10 +47,17 @@ const screenOptions = {
 const HomeNavigator = () => {
     const Stack = createStackNavigator();
 
-    return <Stack.Navigator>
-
-    </Stack.Navigator>
+    return (
+        <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+                name='Home'
+                component={HomeScreen}
+                options={{ title: 'Home' }}
+            />
+        </Stack.Navigator>
+    );
 }
+
 
 const DirectoryNavigator = () => {
     const Stack = createStackNavigator();
@@ -59,7 +96,8 @@ const Main = () => {
             paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight}}>
                 <Drawer.Navigator
                 initialRouteName= 'Home'
-                drawerStyle= {{ backgroundColor: '#CEC8FF' }}>
+                drawerStyle= {{ backgroundColor: '#CEC8FF' }}
+                screenOptions={screenOptions}>
 
                 <Drawer.Screen
                     name='Home'
@@ -72,6 +110,19 @@ const Main = () => {
                     component={DirectoryNavigator}
                     options={{ title: 'Directory' }}
                 />  
+
+                <Drawer.Screen
+                name="About"
+                component={AboutNavigator}
+                options={{ title: 'About Us' }}
+                />
+
+                <Drawer.Screen
+                name="Contact"
+                component={ContactNavigator}
+                options={{ title: 'Contact Us' }}
+                />
+
 
                 </Drawer.Navigator>
         </View>
