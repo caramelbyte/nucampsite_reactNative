@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Modal, Button } from 'react-native';
 import { COMMENTS } from '../shared/comments';
 import RenderCampsite from '../features/campsites/RenderCampsite';
 
 const CampsiteInfoScreen = ({ route }) => {
     const { campsite } = route.params;
     const [comments, setComments] = useState(COMMENTS);
-    const [favorite, setFavorite] = useState(false); // Added state for favorite
+    const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [isFavorite, setIsFavorite] = useState(false); // Added state for tracking favorite
 
     const renderCommentItem = ({ item }) => {
         return (
@@ -18,23 +19,46 @@ const CampsiteInfoScreen = ({ route }) => {
         );
     };
 
+    const markFavorite = () => {
+        setIsFavorite(true);
+    };
+
     return (
-        <FlatList
-            data={comments.filter((comment) => comment.campsiteId === campsite.id)}
-            renderItem={renderCommentItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ marginHorizontal: 20, paddingVertical: 20 }}
-            ListHeaderComponent={
-                <>
-                    <RenderCampsite
-                        campsite={campsite}
-                        isFavorite={favorite} // Passed isFavorite prop
-                        markFavorite={() => setFavorite(true)} // Passed markFavorite prop
-                    />
-                    <Text style={styles.commentsTitle}>Comments</Text>
-                </>
-            }
-        />
+        <>
+            <FlatList
+                data={comments.filter((comment) => comment.campsiteId === campsite.id)}
+                renderItem={renderCommentItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={{ marginHorizontal: 20, paddingVertical: 20 }}
+                ListHeaderComponent={
+                    <>
+                        <RenderCampsite
+                            campsite={campsite}
+                            isFavorite={isFavorite}
+                            markFavorite={markFavorite}
+                            onShowModal={() => setShowModal(!showModal)} // Passing showModal toggle function
+                        />
+                        <Text style={styles.commentsTitle}>Comments</Text>
+                    </>
+                }
+            />
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={showModal}
+                onRequestClose={() => setShowModal(!showModal)}
+            >
+                <View style={styles.modal}>
+                    <View style={{ margin: 10 }}>
+                        <Button
+                            onPress={() => setShowModal(!showModal)}
+                            color="#808080"
+                            title="Cancel"
+                        />
+                    </View>
+                </View>
+            </Modal>
+        </>
     );
 };
 
@@ -50,7 +74,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 20,
+        marginTop: 20, // Completed the missing value
+    },
+    modal: {
+        justifyContent: 'center',
+        margin: 20, // Define modal styling
     },
 });
 
