@@ -6,7 +6,7 @@ import {
     StyleSheet,
     Switch,
     Button,
-    Alert // Import Alert instead of Modal
+    Alert 
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -63,7 +63,7 @@ const ReservationScreen = () => {
     );
 };
 
-// Update the StyleSheet, removing any styles related to the Modal
+
 const styles = StyleSheet.create({
     formRow: {
         alignItems: 'center',
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     formItem: {
         flex: 1
     }
-    // Removed modal styles
+    
 });
 
 export default ReservationScreen;
