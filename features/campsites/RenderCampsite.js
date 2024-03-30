@@ -1,5 +1,12 @@
 import { useRef } from 'react';
-import { StyleSheet, Text, View, PanResponder, Alert } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    PanResponder,
+    Alert,
+    Share
+} from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { baseUrl } from '../../shared/baseUrl';
 import * as Animatable from 'react-native-animatable';
@@ -10,7 +17,6 @@ const RenderCampsite = (props) => {
     const view = useRef();
 
     const isLeftSwipe = ({ dx }) => dx < -200;
-    // Implementing isRightSwipe to detect right swipe gestures
     const isRightSwipe = ({ dx }) => dx > 200;
 
     const panResponder = PanResponder.create({
@@ -34,24 +40,36 @@ const RenderCampsite = (props) => {
                         {
                             text: 'Cancel',
                             style: 'cancel',
-                            onPress: () => console.log('Cancel Pressed'),
+                            onPress: () => console.log('Cancel Pressed')
                         },
                         {
                             text: 'OK',
                             onPress: () =>
                                 props.isFavorite
                                     ? console.log('Already set as a favorite')
-                                    : props.markFavorite(),
-                        },
+                                    : props.markFavorite()
+                        }
                     ],
                     { cancelable: false }
                 );
             } else if (isRightSwipe(gestureState)) {
-                // If it's a right swipe, show the comment form modal
                 props.onShowModal();
             }
-        },
+        }
     });
+
+    const shareCampsite = (title, message, url) => {
+        Share.share(
+            {
+                title,
+                message: `${title}: ${message} ${url}`,
+                url
+            },
+            {
+                dialogTitle: 'Share ' + title
+            }
+        );
+    };
 
     if (campsite) {
         return (
@@ -90,6 +108,20 @@ const RenderCampsite = (props) => {
                             reverse
                             onPress={props.onShowModal}
                         />
+                        <Icon
+                            name='share'
+                            type='font-awesome'
+                            color='#5637DD'
+                            raised
+                            reverse
+                            onPress={() =>
+                                shareCampsite(
+                                    campsite.name,
+                                    campsite.description,
+                                    baseUrl + campsite.image
+                                )
+                            }
+                        />
                     </View>
                 </Card>
             </Animatable.View>
@@ -102,14 +134,14 @@ const styles = StyleSheet.create({
     cardContainer: {
         padding: 0,
         margin: 0,
-        marginBottom: 20,
+        marginBottom: 20
     },
     cardRow: {
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
         flexDirection: 'row',
-        margin: 20,
+        margin: 20
     },
     cardText: {
         textShadowColor: 'rgba(0, 0, 0, 1)',
@@ -117,8 +149,8 @@ const styles = StyleSheet.create({
         textShadowRadius: 20,
         textAlign: 'center',
         color: 'white',
-        fontSize: 20,
-    },
+        fontSize: 20
+    }
 });
 
 export default RenderCampsite;
