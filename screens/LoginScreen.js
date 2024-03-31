@@ -139,14 +139,29 @@ const RegisterTab = () => {
     };
 
     const getImageFromCamera = async () => {
-        const cameraPermission =
-            await ImagePicker.requestCameraPermissionsAsync();
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
 
         if (cameraPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
             });
+            if (capturedImage.assets) {
+                console.log(capturedImage.assets[0]);
+                processImage(capturedImage.assets[0].uri);
+            }
+        }
+    };
+
+    const getImageFromGallery = async () => {
+        const mediaLibraryPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (mediaLibraryPermissions.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+
             if (capturedImage.assets) {
                 console.log(capturedImage.assets[0]);
                 processImage(capturedImage.assets[0].uri);
@@ -163,7 +178,7 @@ const RegisterTab = () => {
         console.log(processedImage);
         setImageUrl(processedImage.uri);
     };
-                    
+
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -174,6 +189,7 @@ const RegisterTab = () => {
                         style={styles.image}
                     />
                     <Button title='Camera' onPress={getImageFromCamera} />
+                    <Button title='Gallery' onPress={getImageFromGallery} />
                 </View>
                 <Input
                     placeholder='Username'
@@ -260,30 +276,26 @@ const LoginScreen = () => {
                 name='Login'
                 component={LoginTab}
                 options={{
-                    tabBarIcon: (props) => {
-                        return (
-                            <Icon
-                                name='sign-in'
-                                type='font-awesome'
-                                color={props.color}
-                            />
-                        );
-                    }
+                    tabBarIcon: (props) => (
+                        <Icon
+                            name='sign-in'
+                            type='font-awesome'
+                            color={props.color}
+                        />
+                    )
                 }}
             />
             <Tab.Screen
                 name='Register'
                 component={RegisterTab}
                 options={{
-                    tabBarIcon: (props) => {
-                        return (
-                            <Icon
-                                name='user-plus'
-                                type='font-awesome'
-                                color={props.color}
-                            />
-                        );
-                    }
+                    tabBarIcon: (props) => (
+                        <Icon
+                            name='user-plus'
+                            type='font-awesome'
+                            color={props.color}
+                        />
+                    )
                 }}
             />
         </Tab.Navigator>
